@@ -40,7 +40,7 @@ bpy.ops.uv.smart_project()
 # export UVmap
 bpy.ops.uv.export_layout(filepath=prout + ".png", size=(1024, 1024))
 # change folder .png
-move(prout.split("/")[-1] + ".png", path.dirname(prout) + "/" + prout.split("/")[-1] + ".png")
+#move(prout.split("/")[-1] + ".png", path.dirname(prout) + "/" + prout.split("/")[-1] + ".png")
 
 # export obj
 bpy.ops.export_scene.obj(filepath=prout + ".obj")
