@@ -51,12 +51,12 @@ Python (2.7) modules:
 ###################
 
 1. With wrl file
-- ./realityconvert.py -w aspirin.wrl -o aspirin3D
+$ ./realityconvert.py -w aspirin.wrl -o aspirin3D
 
 2. With a sdf or a pdb file
-./realityconvert.py -i aspirin.sdf -o model3D
+$ ./realityconvert.py -i aspirin.sdf -o aspirin3D
 
 3. With tracker
-./realityconvert.py -i aspirin.sdf -t 1 -o model3D
+$ ./realityconvert.py -i aspirin.sdf -t 1 -o aspirin3D
 
 
