@@ -4,7 +4,7 @@ import __main__
 __main__.pymol_argv = [ 'pymol', '-qc'] # Quiet and no GUI
 
 from optparse import OptionParser
-from os import system, listdir, path
+from os import system, listdir, path, remove
 import zipfile
 
 import pymol
@@ -40,7 +40,7 @@ def runBlender(pwrml, pout):
 
 
 
-def PDBtoWRL(pfilinPDB, pfilout, pseopt = 1):
+def PDBtoWRL(pfilinPDB, pfilout, pseopt = 0):
 
     pfilinWRL = pfilout + ".wrl"
 
@@ -64,7 +64,7 @@ def PDBtoWRL(pfilinPDB, pfilout, pseopt = 1):
 
 
 
-def main():
+def main(clean=1):
 
     use = "%prog [-i file .pdb or .sdf] [-w file in wrml] [-o path out name] [-t tracker option (default = 0)] [-h help]\n\n" \
           "Dependencies: \n" \
@@ -75,12 +75,12 @@ def main():
           "\n\n" \
           "Exemples:\n" \
           "1. With wrl file\n" \
-          "- ./main.py -w myfile.wrl -o model3D\n\n" \
+          "- ./realityconvert.py -w myfile.wrl -o model3D\n\n" \
           "2. With a sdf or a pdb file\n" \
-          "./main.py -i myligand.sdf -o model3D\n" \
-          "./main.py -i myligand.pdb -o model3D\n\n" \
+          "./realityconvert.py -i myligand.sdf -o model3D\n" \
+          "./realityconvert.py -i myligand.pdb -o model3D\n\n" \
           "3. With tracker\n" \
-          "./main.py -i myligand.pdb -t 1 -o model3D\n\n"
+          "./realityconvert.py -i myligand.pdb -t 1 -o model3D\n\n"
     parser = OptionParser(usage=use)
 
 
@@ -111,6 +111,10 @@ def main():
         lfilout = runBlender(pwrl, pout)
         if len(lfilout) == 4:
             print "Model 3D is generated -> " + lfilout[-1]
+            if clean == 1:
+                remove(lfilout[0])
+                remove(lfilout[1])
+                remove(lfilout[2])
             return
         else:
             print "ERROR -> No model 3D generated, please check your input files and paths"
@@ -123,16 +127,18 @@ def main():
         if filetype != ".sdf" and filetype != ".pdb":
             print "ERROR -> File type in input not supported, please use pdb or sdf format"
             return
-        #elif filetype == "sdf":
-        #    cmdconvert = "babel " + pfilin + " " + pfilin[:-4] + "pdb"
-        #    system(cmdconvert)
-        #    pfilin = pfilin[:-4] + "pdb"
+
+
 
         # convert PDB to WRL
         pwrl = PDBtoWRL(pfilin, pout)
         lfilout = runBlender(pwrl, pout)
         if len(lfilout) == 4:
             print "Model 3D is generated -> " + lfilout[-1]
+            if clean == 1:
+                remove(lfilout[0])
+                remove(lfilout[1])
+                remove(lfilout[2])
         else:
             print "ERROR -> No model 3D generated, please check your input files and paths"
             return
@@ -147,11 +153,11 @@ def main():
         cmdMoldConvert = "molconvert \"jpeg:w500,Q95,#ffffff\" " + path.abspath(psmiles) + " -o " + path.abspath(pout) + "_tracker.jpeg"
         print cmdMoldConvert
         system(cmdMoldConvert)
+        if clean == 1:
+            remove(path.abspath(psmiles))
 
 main()
 
-
-#PDBtoWRL("/home/aborrel/3D_model/e20.sdf")
 
 
 
