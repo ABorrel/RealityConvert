@@ -23,7 +23,7 @@ bpy.ops.object.delete()
 bpy.data.objects["Cube"].select = True
 bpy.ops.object.delete()
 
-# joins all meshes
+# joins all meshes -> need to fix for more complex model
 for ob in bpy.context.scene.objects:
     if ob.type == 'MESH':
         ob.select = True
