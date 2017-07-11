@@ -12,10 +12,12 @@ import pymol
 
 def runBlender(pwrml, pout):
 
-    cmd = "blender --background --python command3D.py -- " + str(pwrml) + " " + str(pout)
-    print "run blender"
-    print cmd
+    cmd = "/home/aborrel/softwares/blender-2.76b-linux-glibc211-x86_64/blender --background --python command3D.py -- " + str(pwrml) + " " + str(pout)
+    print "Run blender - wrml"
+    print "blender2.76 --background --python command3D.py " + str(pwrml.split("/")[-1]) + " " +  str(pout.split("/")[-1])
+    print "tmp folder:" + str(pwrml.split("/")[-2]) 
     system(cmd)
+    print cmd
 
     lfilout = [path.dirname(pout) + "/" + i for i in listdir(path.dirname(pout))]
     #print lfilout
@@ -23,6 +25,7 @@ def runBlender(pwrml, pout):
     ppng = pout + ".png"
     pobj = pout + ".obj"
     pmtl = pout + ".mtl"
+    pstl = pout + ".stl"
 
     if not ppng in lfilout or not pobj in lfilout or not pmtl in lfilout:
         print "ERROR -> BLENDER CONVERSION - Check the WRML file"
@@ -35,8 +38,13 @@ def runBlender(pwrml, pout):
         zipmodel.write(pobj, arcname=pobj.split("/")[-1])
         zipmodel.write(pmtl, arcname=pmtl.split("/")[-1])
         zipmodel.close()
-
-        return [pobj, pmtl, ppng, pzip]
+	
+        pzipstl = pout + "_stl.zip"
+        zipmodel = zipfile.ZipFile(pzipstl, "w")
+        zipmodel.write(ppng, arcname=ppng.split("/")[-1])
+        zipmodel.write(pstl, arcname=pstl.split("/")[-1])
+        zipmodel.close()
+        return [pobj, pmtl, pstl, ppng, pzip, pzipstl]
 
 
 
@@ -115,15 +123,16 @@ def main(clean=1):
                 remove(lfilout[0])
                 remove(lfilout[1])
                 remove(lfilout[2])
+                remove(lfilout[3])
             return
         else:
             print "ERROR -> No model 3D generated, please check your input files and paths"
 
     elif pfilin != "0":
-        print pfilin
+        print "File in:" + pfilin.split("/")[-1]
 
         filetype = path.splitext(pfilin)[1]
-        print filetype
+        print "File type:", filetype
         if filetype != ".sdf" and filetype != ".pdb":
             print "ERROR -> File type in input not supported, please use pdb or sdf format"
             return
@@ -139,6 +148,7 @@ def main(clean=1):
                 remove(lfilout[0])
                 remove(lfilout[1])
                 remove(lfilout[2])
+                remove(lfilout[3])
         else:
             print "ERROR -> No model 3D generated, please check your input files and paths"
             return
@@ -151,7 +161,7 @@ def main(clean=1):
 
         # general
         cmdMoldConvert = "molconvert \"jpeg:w500,Q95,#ffffff\" " + path.abspath(psmiles) + " -o " + path.abspath(pout) + "_tracker.jpeg"
-        print cmdMoldConvert
+        print "molconvert \"jpeg:w500,Q95,#ffffff\" " + psmiles.split("/")[-1] + " -o " + pout.split("/")[-1] + "_tracker.jpeg"
         system(cmdMoldConvert)
         if clean == 1:
             remove(path.abspath(psmiles))
